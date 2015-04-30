@@ -9,8 +9,6 @@ License
 
 [![WTFPL](http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-1.png)](http://www.wtfpl.net)
 
-read `LICENSE`
-
 Usage
 ---
 
@@ -102,13 +100,22 @@ noConflict method supplied when used globally
 Ajax = window.Ajax.noConflict();
 ```
 
+Linting
+---
+
+Linted with jshint
+
+```js
+& npm run lint
+```
+
 Testing
 ---
 
 Tested with testem
 
 ```bash
-$ npm test
+$ npm run test
 ```
 
 Documentation
@@ -117,6 +124,6 @@ Documentation
 Documented with jsdoc
 
 ```bash
-$ npm docs
+$ npm run docs
 ```
 
