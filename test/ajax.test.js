@@ -1,4 +1,5 @@
 
+/* global Ajax, expect */
 (function ( ) {
     "use strict";
     var URL, nock, server, id;
@@ -23,10 +24,10 @@
         // test is run and the test will not throw the expected error
 
         // setup mock server
-        id = function ( ) {
+        id = (function ( ) {
             var _id = 0;
             return function ( ) { return _id++; };
-        }( );
+        })( );
 
         before(function ( ) {
             nock = require("nock");
@@ -45,7 +46,7 @@
                 .post("/post_200/", { a: 1, b: 2 })
                 .reply(200, "content")
                 .get("/get_watch/")
-                .reply(200, function ( uri, body ) {
+                .reply(200, function ( ) {
                     return "" + id();
                 });
         });
@@ -60,20 +61,20 @@
 
     describe("environment", function ( ) {
         it("should have window", function ( ) {
-            expect(window).to.be.ok;
+            return expect(window).to.be.ok;
         });
         it("should have global", function ( ) {
-            expect(global).to.be.ok;
+            return expect(global).to.be.ok;
         });
         it("should have env", function ( ) {
-            expect(global.ENV).to.be.ok;
+            return expect(global.ENV).to.be.ok;
         });
     });
 
     describe("mock server", function ( ) {
         it("should respond", function ( done ) {
             new Ajax(URL + "/respond/").then(function ( data ) {
-                expect(data).to.be.ok;
+                data = expect(data).to.be.ok;
                 done();
             }).error(function ( status ) {
                 throw new Error("unexpected status: " + status);
@@ -89,7 +90,10 @@
         });
         it("should accept no new", function ( ) {
             expect(function ( ) {
+                /* jshint -W064 */
+                // reason: its actually a test :/
                 Ajax(URL + "/get_200/");
+                /* jshint +W064 */
             }).to.not.throw(Error);
         });
     });
@@ -141,7 +145,7 @@
                 throw new Error("should not be called");
             });
             setTimeout(done.bind(null, null), 400);
-        })
+        });
     });
 
     describe("callbacks", function ( ) {
@@ -225,7 +229,7 @@
                         }, 800);
                     });
                     it("delay should be changable", function ( done ) {
-                        var ajax, last;
+                        var ajax;
                         ajax = new Ajax(URL + "/get_watch/", { watch: 200 })
                         .change(function ( ) {
                             throw new Error("should not be called");

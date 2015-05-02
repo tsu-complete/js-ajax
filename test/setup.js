@@ -1,4 +1,5 @@
 
+/* global chai */
 (function ( ) {
     "use strict";
 

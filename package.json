@@ -5,7 +5,7 @@
   "main": "ajax.js",
   "scripts": {
     "prelint": "test -z $(command -v jshint)\"\" && npm i -g jshint || true",
-    "lint": "jshint *.js || true",
+    "lint": "jshint *.js test/*.js || true",
     "predocs": "test -z $(command -v jsdoc)\"\" && npm i -g jsdoc || true",
     "docs": "jsdoc *.js readme.md || true",
     "pretest": "test -z $(command -v mocha)\"\" && npm i -g mocha || true",
