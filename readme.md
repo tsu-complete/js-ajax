@@ -1,5 +1,5 @@
 
-js-ajax ![Build Status](https://travis-ci.org/tsu-complete/js-ajax.svg?branch=master)
+js-ajax [![Build Status](https://travis-ci.org/tsu-complete/js-ajax.svg?branch=master)](https://travis-ci.org/tsu-complete/js-ajax)
 ===
 
 > Just another javascript ajax library
