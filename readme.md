@@ -2,7 +2,7 @@
 js-ajax [![Build Status](https://travis-ci.org/tsu-complete/js-ajax.svg?branch=master)](https://travis-ci.org/tsu-complete/js-ajax)
 ===
 
-> Just another javascript ajax library
+> Just another javascript ajax utility
 
 License
 ---
@@ -32,7 +32,7 @@ new Ajax("path/to/service", { /* options */ });
 
 new Ajax({
     url:    "path/to/service",
-    method: ajax.METHOD_GET,
+    method: Ajax.METHOD_GET,
     watch:  -1,
     params: {
         "key", "value",
