@@ -1,0 +1,22 @@
+{
+  "name": "js-ajax",
+  "version": "1.0.0",
+  "homepage": "https://github.com/tsu-complete/js-ajax",
+  "authors": [
+    "tsukumo"
+  ],
+  "description": "javascript ajax utility",
+  "main": "ajax.js",
+  "keywords": [
+    "ajax",
+    "utility",
+    "network",
+    "xhr",
+    "request",
+    "watch"
+  ],
+  "license": "WTFPL",
+  "ignore": [
+    "*", "!ajax.js"
+  ]
+}
