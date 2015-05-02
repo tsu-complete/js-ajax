@@ -284,6 +284,11 @@
                         throw new Error("should not be called");
                     }).error(done.bind(null, null));
                 });
+                it("should support error param", function ( done ) {
+                    new Ajax(URL + "/get_404/").then(function ( ) {
+                        throw new Error("should not be called");
+                    }, done.bind(null, null));
+                });
             });
             describe("change", function ( ) {
                 describe("without watch", function ( ) {
