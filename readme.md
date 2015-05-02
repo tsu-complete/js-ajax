@@ -106,7 +106,7 @@ Linting
 Linted with jshint
 
 ```js
-& npm run lint
+$ npm run lint
 ```
 
 Testing
