@@ -1,0 +1,37 @@
+{
+  "name": "js-ajax",
+  "version": "1.0.0",
+  "description": "javascript ajax utility",
+  "main": "ajax.js",
+  "scripts": {
+    "prelint": "test -z $(command -v jshint)\"\" && npm i -g jshint || true",
+    "lint": "jshint *.js || true",
+    "predocs": "test -z $(command -v jsdoc)\"\" && npm i -g jsdoc || true",
+    "docs": "jsdoc *.js readme.md || true",
+    "pretest": "test -z $(command -v mocha)\"\" && npm i -g mocha || true",
+    "test": "mocha -r test/setup.js -R tap test/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tsu-complete/js-ajax.git"
+  },
+  "keywords": [
+    "ajax",
+    "utility",
+    "network",
+    "xhr",
+    "request",
+    "watch"
+  ],
+  "author": "tsukumo",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/tsu-complete/js-ajax/issues"
+  },
+  "homepage": "https://github.com/tsu-complete/js-ajax",
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "nock": "^1.7.1",
+    "xhr2": "^0.1.2"
+  }
+}
