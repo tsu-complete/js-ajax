@@ -51,8 +51,6 @@
                 });
         });
 
-
-
         // clean up mock server
         after(function ( ) {
             nock.cleanAll();
