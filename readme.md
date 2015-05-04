@@ -4,6 +4,9 @@ js-ajax [![Build Status](https://travis-ci.org/tsu-complete/js-ajax.svg?branch=m
 
 > Just another javascript ajax utility
 
+[![Browser Support](https://ci.testling.com/tsu-complete/js-ajax.png)
+](https://ci.testling.com/tsu-complete/js-ajax)
+
 License
 ---
 
