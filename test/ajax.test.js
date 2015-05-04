@@ -8,6 +8,7 @@
 
     if (global.ENV === global.ENV_NODE) {
         global.Ajax = require("../ajax");
+        nock = require("nock");
 
         // xhr isnt going to exist at this point
         describe("missing support", function ( ) {
@@ -30,7 +31,6 @@
         })( );
 
         before(function ( ) {
-            nock = require("nock");
             server = nock(URL)
                 .persist()
 
