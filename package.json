@@ -31,7 +31,15 @@
   "homepage": "https://github.com/tsu-complete/js-ajax",
   "devDependencies": {
     "chai": "^2.3.0",
+    "mocha": "^2.2.4",
     "nock": "^1.7.1",
     "xhr2": "^0.1.2"
+  },
+  "testling": {
+    "harness": "mocha-bdd",
+    "files": [
+      "test/setup.js",
+      "test/*.test.js"
+    ]
   }
 }
