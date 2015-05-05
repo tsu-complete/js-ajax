@@ -1,5 +1,5 @@
 
-js-ajax [![Build Status](https://travis-ci.org/tsu-complete/js-ajax.svg?branch=master)](https://travis-ci.org/tsu-complete/js-ajax) [![Dependency Status](https://david-dm.org/tsu-complete/js-ajax.svg)](https://david-dm.org/tsu-complete/js-ajax)
+js-ajax [![Build Status](https://travis-ci.org/tsu-complete/js-ajax.svg?branch=master)](https://travis-ci.org/tsu-complete/js-ajax) [![Dependency Status](https://david-dm.org/tsu-complete/js-ajax.svg)](https://david-dm.org/tsu-complete/js-ajax) [![Documentation Coverage](http://inch-ci.org/github/tsu-complete/js-ajax.svg?branch=master)](http://inch-ci.org/github/tsu-complete/js-ajax?branch=master)
 ===
 
 > Just another javascript ajax utility
