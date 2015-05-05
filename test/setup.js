@@ -23,4 +23,3 @@
     global.assert = chai.assert;
 
 })( );
-
