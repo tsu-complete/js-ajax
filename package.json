@@ -8,10 +8,8 @@
     "lint": "jshint *.js test/*.js || true",
     "predocs": "test -z $(command -v jsdoc)\"\" && npm i -g jsdoc || true",
     "docs": "jsdoc *.js readme.md || true",
-    "pretest": "test -z $(command -v mocha)\"\" && npm i -g mocha || true",
-    "test": "mocha -r test/setup.js -R tap test/*.test.js",
-    "precoveralls": "test -z $(command -v istanbul)\"\" && npm i -g istanbul || true",
-    "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
+    "pretest": "test -z $(command -v istanbul)\"\" && npm i -g istanbul || true",
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "repository": {
     "type": "git",
