@@ -9,19 +9,19 @@
     } else if ("undefined" !== typeof module) {
         module.exports = factory();
     } else {
-        old = window.Ajax;
-        window.Ajax = factory();
+        old = window.ajax;
+        window.ajax = factory();
 
         /**
          * resets the old value at ajax and returns this one
-         * @memberof Ajax
+         * @memberof ajax
          * @function noConflict
-         * @return {Function} Ajax
+         * @return {Function} ajax
          */
-        window.Ajax.noConflict = function ( ) {
+        window.ajax.noConflict = function ( ) {
             var tmp;
-            tmp = window.Ajax;
-            window.Ajax = old;
+            tmp = window.ajax;
+            window.ajax = old;
             return tmp;
         };
     }
@@ -29,7 +29,7 @@
 })(function ( ) {
     "use strict";
 
-    var Ajax, __proto, normalize, throwable, create_xhr;
+    var ajax, normalize, throwable, create_xhr;
 
     throwable = function ( message ) {
         return new Error("ajax: " + message);
@@ -73,309 +73,174 @@
                 result = { };
         }
 
+        if ("boolean" !== typeof result.auto) {
+            result.auto = true;
+        }
 
-        result.method = String(result.method) || Ajax.METHOD_GET;
-
-        result.watch = parseInt(result.watch);
-        if (isNaN(result.watch)) { result.watch = -1; }
+        if ("string" !== typeof result.method) {
+            result.method = ajax.METHOD_GET;
+        }
 
         result.params = Object(result.params);
 
-        result.url = result.url;
-
-        if (!result.url) {
-            throw throwable("argument required: url");
+        if ("string" !== typeof result.url) {
+            throw throwable("argument required [url] as [string]");
         }
 
         return result;
     };
 
     /**
-     * responsible for setting up and monitoring the xhr request
-     * @class Ajax
+     * responsible for setting up and monitoring an xhr request
+     * @function ajax
      * @param {(string|Object)} param1 url or configuration object
      * @param {Object} [param2] configuration object
      * @param {string} [param2.url] request location
+     * @param {Boolean}[param2.auto=true] send request immediately
      * @param {string} [param2.method=get] xhr method
-     * @param {number} [param2.watch=-1] duration between watch requests
      * @param {Object} [param2.params={}] parameters to send in request
      */
-    Ajax = function ( /* arguments */ ) {
-        var key;
+    ajax = function ( /* arguments */ ) {
+        var data, key, xhr, promise;
 
-        // for new haters
-        if (!this || this === window) {
-            return new Ajax(normalize(arguments));
-        }
+        data = normalize(arguments);
+        data.post = null;
 
-        this.data = normalize(arguments);
-        this.data.post = null;
+        if (Object.keys(data.params).length) {
+            if (data.method !== ajax.METHOD_GET) {
+                data.post = "";
 
-        if (Object.keys(this.data.params).length) {
-            if (this.data.method !== Ajax.METHOD_GET) {
-                this.data.post = "";
-
-                for (key in this.data.params) {
-                    this.data.post += "&" + key + "=" + this.data.params[key];
+                for (key in data.params) {
+                    data.post += "&" + key + "=" + data.params[key];
                 }
 
                 // clean up first character
-                this.data.post = this.data.post.substr(1);
+                data.post = data.post.substr(1);
 
             } else  {
-                if (!~this.data.url.indexOf("?")) {
-                    this.data.url += "?";
+                if (!~data.url.indexOf("?")) {
+                    data.url += "?";
                 }
 
-                for (key in this.data.params) {
-                    this.data.url += "&" + key + "=" + this.data.params[key];
+                for (key in data.params) {
+                    data.url += "&" + key + "=" + data.params[key];
                 }
             }
         }
 
-        this._init_xhr();
+        // setup xhr
+        xhr = create_xhr();
 
-        if (this.data.watch > -1) {
-            this._init_watcher();
+        // setup promise
+        promise = new window.Promise(function ( accept, reject ) {
+            xhr.accept = accept;
+            xhr.reject = reject;
+
+            xhr.onreadystatechange = function ( ) {
+                if (4 !== this.readyState) {
+                    return void 0;
+                }
+
+                if (200 === this.status) {
+                    accept(this.responseText);
+                } else {
+                    reject(this.status);
+                }
+            };
+        });
+
+        /**
+         * aborts current xhr call
+         * @memberof ajax#
+         * @function cancel
+         * @return {Object} self context for chaining
+         */
+        promise.cancel = function (  ) {
+            xhr.abort();
+            xhr.reject(ajax.STATUS_ABORT);
+            return promise;
+        };
+
+        /**
+         * sends the xhr
+         * @function send
+         * @memberof ajax#
+         */
+        promise.send = function (  ) {
+            xhr.open(data.method, data.url, true);
+            xhr.setRequestHeader("Content-Type",
+                "application/x-www-form-urlencoded");
+            xhr.send(data.post);
+            return promise;
+        };
+
+        // send the request if auto
+        if (data.auto) {
+            promise.send();
         }
+
+        return promise;
     };
 
     /**
      * defines the xhr get request method
-     * @memberof Ajax
+     * @memberof ajax
      * @member {string}
      * @static
      */
-    Ajax.METHOD_GET     = "GET";
+    ajax.METHOD_GET     = "GET";
     /**
      * defines the xhr post request method
-     * @memberof Ajax
+     * @memberof ajax
      * @member {string}
      * @static
      */
-    Ajax.METHOD_POST    = "POST";
+    ajax.METHOD_POST    = "POST";
     /**
      * defines the xhr put request method
-     * @memberof Ajax
+     * @memberof ajax
      * @member {string}
      * @static
      */
-    Ajax.METHOD_PUT     = "PUT";
+    ajax.METHOD_PUT     = "PUT";
     /**
      * defines the xhr update request method
-     * @memberof Ajax
+     * @memberof ajax
      * @member {string}
      * @static
      */
-    Ajax.METHOD_UPDATE  = "UPDATE";
+    ajax.METHOD_UPDATE  = "UPDATE";
     /**
      * defines the xhr delete request method
-     * @memberof Ajax
+     * @memberof ajax
      * @member {string}
      * @static
      */
-    Ajax.MOTHOD_DELETE  = "DELETE";
-
-
-    __proto = Ajax.prototype;
+    ajax.METHOD_DELETE  = "DELETE";
 
     /**
-     * initializes the xhr object
-     * @memberof Ajax#
-     * @private
+     * defines the abort status
+     * @memberof ajax
+     * @member {Number}
+     * @static
      */
-    __proto._init_xhr = function ( ) {
-        var callbacks;
-
-        this.xhr = create_xhr();
-
-        this.xhr.last = null;
-
-        callbacks = {
-            then    : [ ]
-        ,   change  : [ ]
-        ,   error   : [ ]
-        };
-
-        /**
-         * aborts a current xhr call
-         * @memberof Ajax#
-         * @function cancel
-         * @return {Object} self context for chaining
-         */
-        this.cancel = function ( ) {
-            this.xhr.abort();
-            this.xhr.call("error", -1);
-            return this;
-        };
-
-        /**
-         * promise success callback
-         * @memberof Ajax#
-         * @function then
-         * @param {Function} callback promise listener
-         * @return {Object} self context for chaining
-         */
-        this.then = function ( callback, onerror ) {
-            if ("function" === typeof callback) {
-                callbacks.then.push(callback);
-            } else {
-                throw new TypeError(throwable.callback);
-            }
-            if ("function" === typeof onerror) {
-                callbacks.error.push(onerror);
-                // just ignore if onerror is not a function
-            }
-            return this;
-        };
-
-        /**
-         * promise status callback
-         * @memberof Ajax#
-         * @function change
-         * @param {Function} callback promise listener
-         * @return {Object} self context for chaining
-         */
-        this.change = function ( callback ) {
-            if ("function" === typeof callback) {
-                callbacks.change.push(callback);
-            } else {
-                throw new TypeError(throwable.callback);
-            }
-            return this;
-        };
-
-        /**
-         * promise error callback
-         * @memberof Ajax#
-         * @function error
-         * @param {Function} callback promise listener
-         * @return {Object} self context for chaining
-         */
-        this.error = function ( callback ) {
-            if ("function" === typeof callback) {
-                callbacks.error.push(callback);
-            } else {
-                throw new TypeError(throwable.callback);
-            }
-            return this;
-        };
-
-        this.xhr.call = function ( type, result ) {
-            var i, ref;
-
-            for (i in callbacks[type]) {
-                if ("function" === typeof (ref = callbacks[type][i])) {
-                    ref(result);
-                }
-            }
-        };
-
-        this.xhr.onreadystatechange = function ( ) {
-            if (4 !== this.readyState) {
-                return void 0;
-            }
-
-            if (200 === this.status) {
-                this.last = this.responseText;
-                this.call("then", this.last);
-            } else {
-                this.call("error", this.status);
-            }
-        };
-
-        this.xhr.open(this.data.method, this.data.url, true);
-        this.xhr.setRequestHeader("Content-Type",
-            "application/x-www-form-urlencoded");
-        this.xhr.send(this.data.post);
-    };
-
+    ajax.STATUS_ABORT = -1;
     /**
-     * updates the xhr object
-     * @memberof Ajax#
-     * @private
+     * defines the success status
+     * @memberof ajax
+     * @member {Number}
+     * @static
      */
-    __proto._update_xhr = function ( ) {
-        var old;
-
-        old = this.xhr;
-
-        this.xhr = create_xhr();
-
-        this.xhr.last = old.last;
-        this.xhr.call = old.call;
-
-        this.xhr.onreadystatechange = function ( ) {
-            if (4 !== this.readyState) {
-                return void 0;
-            }
-
-            if (200 === this.status) {
-                if (this.last !== this.responseText) {
-                    this.call("change", this.responseText);
-                    this.last = this.responseText;
-                }
-            } else {
-                this.call("error", this.status);
-            }
-        };
-
-        this.xhr.open(this.data.method, this.data.url, true);
-        this.xhr.setRequestHeader("Content-Type",
-            "application/x-www-form-urlencoded");
-        this.xhr.send(this.data.post);
-    };
-
+    ajax.STATUS_SUCCESS = 200;
     /**
-     * initializes watcher
-     * @memberof Ajax#
-     * @private
+     * defines the not found status
+     * @memberof ajax
+     * @member {Number}
+     * @static
      */
-    __proto._init_watcher = function ( ) {
-        var watch;
+    ajax.STATUS_NOT_FOUND = 404;
 
-        watch = function ( ) {
-            if (this.xhr.readyState === 4 && this.xhr.status === 200) {
-                this._update_xhr();
-            }
-        }.bind(this);
-
-        this.watcher = setInterval(watch, this.data.watch);
-
-        /**
-         * halts the watcher
-         * @memberof Ajax#
-         * @function pause
-         * @return {Object} self context for chaining
-         */
-        this.pause = function ( ) {
-            if (this.watcher) {
-                clearInterval(this.watcher);
-                this.watcher = null;
-            }
-            return this;
-        };
-
-        /**
-         * resumes the watcher, possibly resetting delay period
-         * @memberof Ajax#
-         * @function resume
-         * @param {number} [time] new time to watch at
-         * @return {Object} self context for chaining
-         */
-        this.resume = function ( time ) {
-            if (this.watcher) {
-                clearInterval(this.watcher);
-            }
-            if ("number" === typeof time && time > 0) {
-                this.data.watch = time;
-            }
-            this.watcher = setInterval(watch, this.data.watch);
-            return this;
-        };
-    };
-
-    return Ajax;
+    return ajax;
 
 });
 

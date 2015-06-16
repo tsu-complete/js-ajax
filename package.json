@@ -1,6 +1,6 @@
 {
   "name": "js-ajax",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "javascript ajax utility",
   "main": "ajax.js",
   "scripts": {
@@ -21,8 +21,7 @@
     "utility",
     "network",
     "xhr",
-    "request",
-    "watch"
+    "request"
   ],
   "author": "tsukumo",
   "license": "WTFPL",

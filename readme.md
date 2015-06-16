@@ -15,27 +15,18 @@ License
 Usage
 ---
 
-May be used as a class or function
-
-> Note: It is highly recommended to use the new operator
-
-
-```js
-[new] Ajax("path/to/service").then(function ( data ) {
-    // code...
-});
-```
+Promise wrapper
 
 Options may be provided after or with the url
 
 ```js
-new Ajax("path/to/service", { /* options */ });
+ajax("path/to/service", { /* options */ });
 
 // --or--
 
-new Ajax({
+ajax({
     url:    "path/to/service",
-    method: Ajax.METHOD_GET,
+    method: ajax.METHOD_GET,
     watch:  -1,
     params: {
         "key", "value",
@@ -47,60 +38,50 @@ new Ajax({
 Possible methods are
 
 ```
-Ajax.METHOD_GET
-Ajax.METHOD_POST
-Ajax.METHOD_PUT
-Ajax.METHOD_UPDATE
-Ajax.METHOD_DELETE
+ajax.METHOD_GET
+ajax.METHOD_POST
+ajax.METHOD_PUT
+ajax.METHOD_UPDATE
+ajax.METHOD_DELETE
 ```
 
-Callbacks loosely follow promise pattern
+Returns a promise
 
 ```js
-new Ajax("path/to/service").then(function ( initial_data ) {
+ajax("path/to/service").then(function ( data ) {
     // data code...
-}).change(function ( changed_data ) {
-    // update code...
-}).error(function ( status ) {
+}).catch(function ( status ) {
     // error code...
 });
 
 // --or --
 
-new Ajax("path/to/service").then(function ( initial_data ) {
+ajax("path/to/service").then(function ( data ) {
     // code...
 }, function( status ) {
     // error code...
 });
 ```
 
+A request may be delayed
+```js
+var req = ajax("path/to/service", {auto:false});
+
+// later...
+
+req.send().then(...);
+```
+
 A sent request may be canceled
 
 ```js
-new Ajax("path/to/service").cancel()
-```
-
-A watched request may be paused or resumed
-
-```js
-// CAUTION: only initially watched items will have these methods
-
-req = Ajax("path/to/service", { watch: 1000 });
-
-// pause the current watcher
-req.pause();
-
-// restart the current watcher
-req.resume();
-
-// restart watcher with new delay of 500
-req.resume(500);
+ajax("path/to/service").cancel()
 ```
 
 noConflict method supplied when used globally
 
 ```js
-Ajax = window.Ajax.noConflict();
+ajax = window.ajax.noConflict();
 ```
 
 Linting
