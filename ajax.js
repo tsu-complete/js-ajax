@@ -14,9 +14,9 @@
 
         /**
          * resets the old value at ajax and returns this one
-         * @memberof Ajax#
+         * @memberof Ajax
          * @function noConflict
-         * @return {*} whatever was at ajax, even if undefined
+         * @return {Function} Ajax
          */
         window.Ajax.noConflict = function ( ) {
             var tmp;
@@ -31,10 +31,8 @@
 
     var Ajax, __proto, normalize, throwable, create_xhr;
 
-    throwable = {
-        no_url  : "ajax: must supply url argument"
-    ,   support : "ajax: request objects not supported"
-    ,   callback: "ajax: callback expected to be a function"
+    throwable = function ( message ) {
+        return new Error("ajax: " + message);
     };
 
     create_xhr = function ( ) {
@@ -43,7 +41,7 @@
         } else if (window.ActiveXObject) {
             return new ActiveXObject("Microsoft.XMLHTTP");
         }
-        throw new Error(throwable.support);
+        throw throwable("request object not supported");
     };
 
     // argument normalization and sanity check
@@ -76,20 +74,17 @@
         }
 
 
-        if ("string" !== typeof result.method) {
-            result.method = Ajax.METHOD_GET;
-        }
+        result.method = String(result.method) || Ajax.METHOD_GET;
 
-        if ("number" !== typeof result.watch) {
-            result.watch = -1;
-        }
+        result.watch = parseInt(result.watch);
+        if (isNaN(result.watch)) { result.watch = -1; }
 
-        if ("object" !== typeof result.params) {
-            result.params = { };
-        }
+        result.params = Object(result.params);
 
-        if ("string" !== typeof result.url) {
-            throw new Error(throwable.no_url);
+        result.url = result.url;
+
+        if (!result.url) {
+            throw throwable("argument required: url");
         }
 
         return result;
@@ -109,7 +104,7 @@
         var key;
 
         // for new haters
-        if ("undefined" === typeof this || "undefined" !== typeof this.self) {
+        if (!this || this === window) {
             return new Ajax(normalize(arguments));
         }
 

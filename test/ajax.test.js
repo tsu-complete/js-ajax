@@ -4,7 +4,7 @@
     "use strict";
     var URL, nock, server, id;
 
-    URL = "http://localhost";
+    URL = "http://localhost:3000";
 
     if (global.ENV === global.ENV_NODE) {
         global.Ajax = require("../ajax");
@@ -31,6 +31,7 @@
         })( );
 
         before(function ( ) {
+            nock.recorder.rec();
             server = nock(URL)
                 .persist()
 
