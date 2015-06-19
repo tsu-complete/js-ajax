@@ -5,3 +5,11 @@ v2.0.0
 - returns js promise for compatibility
 - removes watch functionality
 
+v2.0.1
+--
+- introduces content type
+
+v2.0.2
+---
+- removes content length (unsafe)
+
