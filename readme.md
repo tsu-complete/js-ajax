@@ -27,7 +27,6 @@ ajax("path/to/service", { /* options */ });
 ajax({
     url:    "path/to/service",
     method: ajax.METHOD_GET,
-    watch:  -1,
     params: {
         "key", "value",
         "...", "..."
@@ -96,7 +95,7 @@ $ npm run lint
 Testing
 ---
 
-Tested with testem
+Tested with mocha
 
 ```bash
 $ npm run test

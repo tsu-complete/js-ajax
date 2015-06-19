@@ -81,6 +81,10 @@
             result.method = ajax.METHOD_GET;
         }
 
+        if ("string" !== typeof result.type) {
+            result.type = ajax.TYPE_JSON;
+        }
+
         result.params = Object(result.params);
 
         if ("string" !== typeof result.url) {
@@ -95,9 +99,10 @@
      * @function ajax
      * @param {(string|Object)} param1 url or configuration object
      * @param {Object} [param2] configuration object
-     * @param {string} [param2.url] request location
+     * @param {String} [param2.url] request location
      * @param {Boolean}[param2.auto=true] send request immediately
-     * @param {string} [param2.method=get] xhr method
+     * @param {String} [param2.method=get] xhr method
+     * @param {String} [param2.type] specifies content type
      * @param {Object} [param2.params={}] parameters to send in request
      */
     ajax = function ( /* arguments */ ) {
@@ -106,8 +111,10 @@
         data = normalize(arguments);
         data.post = null;
 
-        if (Object.keys(data.params).length) {
-            if (data.method !== ajax.METHOD_GET) {
+        if (data.method !== ajax.METHOD_GET) {
+            if (data.type === ajax.TYPE_JSON) {
+                data.post = JSON.stringify(data.params);
+            } else if (data.type === ajax.TYPE_URL_ENCODED) {
                 data.post = "";
 
                 for (key in data.params) {
@@ -116,15 +123,15 @@
 
                 // clean up first character
                 data.post = data.post.substr(1);
+            }
 
-            } else  {
-                if (!~data.url.indexOf("?")) {
-                    data.url += "?";
-                }
+        } else if (Object.keys(data.params).length) {
+            if (!~data.url.indexOf("?")) {
+                data.url += "?";
+            }
 
-                for (key in data.params) {
-                    data.url += "&" + key + "=" + data.params[key];
-                }
+            for (key in data.params) {
+                data.url += "&" + key + "=" + data.params[key];
             }
         }
 
@@ -168,8 +175,10 @@
          */
         promise.send = function (  ) {
             xhr.open(data.method, data.url, true);
-            xhr.setRequestHeader("Content-Type",
-                "application/x-www-form-urlencoded");
+            xhr.setRequestHeader("Content-Type", data.type);
+            if (data.post) {
+                xhr.setRequestHeader("Content-Length", data.post.length);
+            }
             xhr.send(data.post);
             return promise;
         };
@@ -239,6 +248,21 @@
      * @static
      */
     ajax.STATUS_NOT_FOUND = 404;
+
+    /**
+     * defines the url encoded type
+     * @memberof ajax
+     * @member {String}
+     * @static
+     */
+    ajax.TYPE_URL_ENCODED = "application/x-www-form-urlencoded";
+    /**
+     * defines the json type
+     * @memberof ajax
+     * @member {String}
+     * @static
+     */
+    ajax.TYPE_JSON = "application/json";
 
     return ajax;
 
