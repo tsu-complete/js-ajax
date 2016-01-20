@@ -176,6 +176,8 @@
         promise.send = function (  ) {
             xhr.open(data.method, data.url, true);
             xhr.setRequestHeader("Content-Type", data.type);
+            for header, content of data.headers
+              xhr.setRequestHeader header, content
             xhr.send(data.post);
             return promise;
         };
