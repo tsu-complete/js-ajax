@@ -24,7 +24,7 @@
     "request"
   ],
   "author": "tsukumo",
-  "license": "WTFPL",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/tsu-complete/js-ajax/issues"
   },
