@@ -174,12 +174,19 @@
          * @memberof ajax#
          */
         promise.send = function (  ) {
-            var header;
+            var item;
             
             xhr.open(data.method, data.url, true);
             xhr.setRequestHeader("Content-Type", data.type);
             for (header in data.headers) {
-              xhr.setRequestHeader(header, data.headers[header]);
+                xhr.setRequestHeader(header, data.headers[header]);
+            }
+            for (item in data.passthrough) {
+                if (item[0] === "!") {
+                    xhr[item.substr(1)](data.passthrough[item.substr(1)]);
+                } else {
+                    xtr[item] = data.passthrough[item];
+                }
             }
             xhr.send(data.post);
             return promise;
