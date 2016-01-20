@@ -174,10 +174,13 @@
          * @memberof ajax#
          */
         promise.send = function (  ) {
+            var header;
+            
             xhr.open(data.method, data.url, true);
             xhr.setRequestHeader("Content-Type", data.type);
-            for header, content of data.headers
-              xhr.setRequestHeader header, content
+            for (header in data.headers) {
+              xhr.setRequestHeader(header, data.headers[header]);
+            }
             xhr.send(data.post);
             return promise;
         };
