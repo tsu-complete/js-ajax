@@ -178,8 +178,8 @@
             
             xhr.open(data.method, data.url, true);
             xhr.setRequestHeader("Content-Type", data.type);
-            for (header in data.headers) {
-                xhr.setRequestHeader(header, data.headers[header]);
+            for (item in data.headers) {
+                xhr.setRequestHeader(item, data.headers[item]);
             }
             for (item in data.passthrough) {
                 if (item[0] === "!") {
