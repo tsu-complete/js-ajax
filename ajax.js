@@ -185,7 +185,7 @@
                 if (item[0] === "!") {
                     xhr[item.substr(1)](data.passthrough[item.substr(1)]);
                 } else {
-                    xtr[item] = data.passthrough[item];
+                    xhr[item] = data.passthrough[item];
                 }
             }
             xhr.send(data.post);
